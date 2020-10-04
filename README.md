@@ -1,4 +1,4 @@
-# date-from-file-name-to-metadata
+# image-and-movie-bulk-creation-dates
 This python scripts aims at setting the creation date of scanned photo to the actual date of the picture.
 
 The basis of this project is to set correct creation time on digitized movies and images. 
