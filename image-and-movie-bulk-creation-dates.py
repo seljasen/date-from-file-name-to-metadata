@@ -22,6 +22,8 @@ def handleFilesInFolder(root_folder):
     skipped_count = 0
     failing_folders = []
     for root, dirs, files in os.walk(root_folder):
+        for folder in dirs:
+            print(folder) 
         for file in files:
             #print all the file names
             #append the file name to the list
@@ -40,8 +42,7 @@ def handleFilesInFolder(root_folder):
                 setImageDateTakenAttribute(full_path, folder_date)
                 setLastModifiedTime(full_path, epoch)
                 image_count = image_count + 1
-        for dir in dirs:
-            print(dir)  
+ 
 
     print('\nDone!\n{count} images updated.\n{skipped_count} images skipped.\n'.
         format(count=image_count, skipped_count=skipped_count))    
@@ -70,11 +71,16 @@ def setCreationTime(filepath, epochtime):
 
 def setImageDateTakenAttribute(filename, date_time):
     exif_dict = piexif.load(filename)
+    date_taken = datetime.datetime(*date_time[:6]).strftime("%Y:%m:%d")
     exif_dict['Exif'] = { 
-        piexif.ExifIFD.DateTimeOriginal: datetime.datetime(*date_time[:6]).strftime("%Y:%m:%d %H:%M:%S") 
+        piexif.ExifIFD.DateTimeOriginal: date_taken
     } 
     exif_bytes = piexif.dump(exif_dict)
-    piexif.insert(exif_bytes, filename)
+    try:
+        piexif.insert(exif_bytes, filename)
+        return 1
+    except:
+        return 0
 
 
 def getDateTimeFolderPath(folder_path):
@@ -110,7 +116,10 @@ def getEpocFromDateTime(datetime):
 def getUtcTimeDiff():
     utcTime = datetime.datetime.utcnow().timestamp()
     localTime = datetime.datetime.now().timestamp()
-    return utcTime - localTime   
+    timeDiff = utcTime - localTime   
+    if ~time.daylight:
+        timeDiff = timeDiff + 3600
+    return timeDiff
 
 
 
