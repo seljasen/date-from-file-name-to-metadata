@@ -39,7 +39,7 @@ def handleFilesInFolder(root_folder):
                             failing_folders.append(root)
                     continue
                 setCreationTime(full_path, epoch)
-                setImageDateTakenAttribute(full_path, folder_date)
+                #setImageDateTakenAttribute(full_path, folder_date)
                 setLastModifiedTime(full_path, epoch)
                 image_count = image_count + 1
  
@@ -71,9 +71,8 @@ def setCreationTime(filepath, epochtime):
 
 def setImageDateTakenAttribute(filename, date_time):
     exif_dict = piexif.load(filename)
-    date_taken = datetime.datetime(*date_time[:6]).strftime("%Y:%m:%d")
     exif_dict['Exif'] = { 
-        piexif.ExifIFD.DateTimeOriginal: date_taken
+        piexif.ExifIFD.DateTimeOriginal: datetime.datetime(*date_time[:6]).strftime("%Y:%m:%d %H:%M:%S") 
     } 
     exif_bytes = piexif.dump(exif_dict)
     try:
