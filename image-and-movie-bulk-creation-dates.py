@@ -98,9 +98,9 @@ def getDateTimeFolderPath(folder_path):
         date = date_info[2].lower().replace('xx','01').replace('x','1')
         if not date.isnumeric():
             return None
-
-        dateString = '{date}:{month}:{year}'.format(date=date, month=month, year=year)
-        return time.strptime(dateString, "%d:%m:%Y");
+        # Choosing 12 AM on the given date to avoid date shifts resulting from daylight savings issues 
+        dateString = '{date}:{month}:{year} 12:00'.format(date=date, month=month, year=year)
+        return time.strptime(dateString, "%d:%m:%Y %H:%M");
     else:
         return None
 
@@ -115,9 +115,7 @@ def getEpocFromDateTime(datetime):
 def getUtcTimeDiff():
     utcTime = datetime.datetime.utcnow().timestamp()
     localTime = datetime.datetime.now().timestamp()
-    timeDiff = utcTime - localTime   
-    if ~time.daylight:
-        timeDiff = timeDiff + 3600
+    timeDiff = utcTime - localTime  
     return timeDiff
 
 
